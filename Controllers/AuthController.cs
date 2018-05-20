@@ -41,7 +41,7 @@ namespace DatingApp.API.Controllers
             };
 
             var CreatedUser = await _repo.Register(userToCreate, userForRegisterDto.Password);
-
+            // !!!cheating, should implement a valid way to register
             return StatusCode(201);
         }
 
@@ -53,7 +53,7 @@ namespace DatingApp.API.Controllers
             if (userFromRepo == null)
                 return Unauthorized();
 
-            //generate token JWT
+            // generate token JWT
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_config.GetSection("AppSettings:Token").Value);
             var tokenDescriptor = new SecurityTokenDescriptor
