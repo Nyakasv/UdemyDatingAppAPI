@@ -56,7 +56,7 @@ namespace DatingApp.API.Migrations
 
                     b.Property<string>("Gender");
 
-                    b.Property<string>("Insterests");
+                    b.Property<string>("Interests");
 
                     b.Property<string>("Introduction");
 
