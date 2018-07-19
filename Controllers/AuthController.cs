@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System;
 using Microsoft.Extensions.Configuration;
+using AutoMapper;
 
 namespace DatingApp.API.Controllers
 {
@@ -17,16 +18,19 @@ namespace DatingApp.API.Controllers
     {
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
-        public AuthController(IAuthRepository repo, IConfiguration config)
+        private readonly IMapper _mapper;
+
+        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
         {
-            this._config = config;
-            this._repo = repo;
+            _mapper = mapper;
+            _config = config;
+            _repo = repo;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]UserForRegisterDto userForRegisterDto)
         {
-            if(!string.IsNullOrEmpty(userForRegisterDto.Username))
+            if (!string.IsNullOrEmpty(userForRegisterDto.Username))
                 userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
 
             if (await _repo.UserExists(userForRegisterDto.Username))
@@ -70,7 +74,9 @@ namespace DatingApp.API.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            return Ok(new { tokenString });
+            var user = _mapper.Map<UserForListDto>(userFromRepo);
+
+            return Ok(new { tokenString, user });
         }
     }
 }
